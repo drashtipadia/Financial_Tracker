@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { JWT_KEY } from "../constant.js";
+import { JWT_KEY } from "../utils/config.js";
 
 export const protect = async (req, res, next) => {
   let token = req.headers.authorization?.split(" ")[1];

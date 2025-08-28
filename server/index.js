@@ -7,10 +7,10 @@ import authRoutes from "./routes/authRoutes.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use((_, res, next) => {
-  res.setHeader("Content-Security-Policy");
-  next();
-});
+// app.use((_, res, next) => {
+//   res.setHeader("Content-Security-Policy");
+//   next();
+// });
 
 app.get("/", function (_, res) {
   res.send({ checkHealth: "done" });

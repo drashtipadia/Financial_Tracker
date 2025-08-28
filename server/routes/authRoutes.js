@@ -4,6 +4,7 @@ import {
   loginUser,
   getUserInfo,
 } from "../controller/authController.js";
+import { protect } from "../middleware/authMiddleware.js";
 const route = Router();
 route.post("/register", registerUser);
 route.post("/login", loginUser);
