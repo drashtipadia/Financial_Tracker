@@ -3,6 +3,7 @@ import cors from "cors";
 import { PORT } from "./utils/config.js";
 import "./db.js";
 import authRoutes from "./routes/authRoutes.js";
+import incomeRoutes from "./routes/incomeRoutes.js";
 
 const app = express();
 app.use(cors());
@@ -17,6 +18,7 @@ app.get("/", function (_, res) {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("api/v1/icome", incomeRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server started at port ${PORT}`);
