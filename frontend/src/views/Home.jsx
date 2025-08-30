@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../hooks/useAuthStore";
-import Dashboard from "./Dashboard";
+import Navbar from "../components/Navbar";
+import DashboardLayout from "../components/DashboardLayout";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -17,8 +18,9 @@ const Home = () => {
   }, [user, navigate]);
   return (
     <div>
-      Home
-      <Dashboard />
+      <DashboardLayout>
+        <h1>TEST</h1>
+      </DashboardLayout>
     </div>
   );
 };
