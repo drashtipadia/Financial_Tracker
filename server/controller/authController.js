@@ -5,7 +5,7 @@ import { JWT_KEY } from "../utils/config.js";
 
 const generateToken = (id) => {
   // console.log(`generate Token method ${id}`);
-  return jwt.sign({ id }, JWT_KEY, { expiresIn: "8h" });
+  return jwt.sign({ id }, JWT_KEY, { expiresIn: "6h" });
 };
 
 //===============================

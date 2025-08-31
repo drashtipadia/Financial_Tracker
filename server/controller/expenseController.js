@@ -23,7 +23,6 @@ export const addExpense = async (req, res) => {
       res.status(201).send({
         status: "success",
         message: "Expense add successfully",
-        payload: { newExpense },
       });
     })
     .catch((error) => {

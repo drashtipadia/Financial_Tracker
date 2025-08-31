@@ -19,8 +19,8 @@ app.get("/", function (_, res) {
 });
 
 app.use("/api/auth", authRoutes);
-app.use("api/v1/icome", incomeRoutes);
-app.use("api/v1/expense", expenseRoutes);
+app.use("/api/v1/income", incomeRoutes);
+app.use("/api/v1/expense", expenseRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server started at port ${PORT}`);

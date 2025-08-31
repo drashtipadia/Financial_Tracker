@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { protect } from "../middleware/authMiddleware";
+import { protect } from "../middleware/authMiddleware.js";
 import {
   addExpense,
   getAllExpense,
   deleteExpense,
   updateExpense,
-} from "../controller/expenseController";
+} from "../controller/expenseController.js";
 
 const route = Router();
 

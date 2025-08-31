@@ -20,7 +20,6 @@ export const addIncome = async (req, res) => {
       res.status(201).send({
         status: "success",
         message: "Income add successfully",
-        payload: { newIncome },
       });
     })
     .catch((error) => {
