@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Input from "../components/input";
+import Input from "../components/Input.jsx";
 import useAuthStore from "../hooks/useAuthStore.js";
 import { Link, useNavigate } from "react-router-dom";
 import { LuTrendingUpDown } from "react-icons/lu";
