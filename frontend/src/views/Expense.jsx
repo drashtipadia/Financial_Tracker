@@ -1,17 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../components/DashboardLayout";
-import { LuPlus } from "react-icons/lu";
+import { LuDownload, LuPlus } from "react-icons/lu";
 import toast from "react-hot-toast";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS } from "../utils/config";
 import Model from "../components/Model";
 import AddExpenseForm from "../ui/AddExpenseForm";
+import { dateConverter } from "../utils/helper";
 
 const Expense = () => {
   const [expenseData, setExpenseData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openAddExpenseModel, setOpenAddExpenseModel] = useState(false);
 
+  //Get All Expense Details
+  const fetchExpenseDetails = async () => {
+    if (loading) return;
+    setLoading(true);
+    await axiosInstance
+      .get(API_PATHS.EXPENSE.GET_ALL_EXPENSE)
+      .then((res) => {
+        setExpenseData(res.data.data);
+      })
+      .catch((error) => {
+        console.log("Somethhing went wrong please try again", error);
+      })
+      .finally(setLoading(false));
+  };
+
+  //Add expense
   const handleAddExpense = async (expense) => {
     const { category, amount, date, icon } = expense;
     if (!category.trim()) {
@@ -35,10 +52,10 @@ const Expense = () => {
         icon,
       })
       .then((data) => {
-        console.log(data);
+        //  console.log(data);
         setOpenAddExpenseModel(false);
         toast.success(data.data.message);
-        // fetchExpenseDetails();
+        fetchExpenseDetails();
       })
       .catch((error) => {
         console.error(
@@ -47,6 +64,11 @@ const Expense = () => {
         );
       });
   };
+  
+  useEffect(() => {
+    fetchExpenseDetails();
+    return () => {};
+  }, [expenseData]);
 
   return (
     <DashboardLayout activeMenu="Expense">
@@ -73,6 +95,28 @@ const Expense = () => {
             <div className="mt-10">chart</div>
           </div>
         </div>
+        <div> <div className="card">
+            <div className="flex  justify-between">
+              <h5 className="text-lg ">Income Sources</h5>
+              <button className="card-btn">
+                {/* onClick={onDownload} */}
+                <LuDownload className="text-base" /> Download
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2">
+              {expenseData.map((expense) => (
+                <TransactionInfoCard
+                  key={expense._id}
+                  title={expense.category}
+                  icon={expense.icon}
+                  date={dateConverter(expense.date)}
+                  amount={expense.amount}
+                  type="income"
+                  // onDelete={() => onDelete(income._id)}
+                />
+              ))}
+            </div>
+          </div></div>
         <Model
           isOpen={openAddExpenseModel}
           onClose={() => setOpenAddExpenseModel(false)}
