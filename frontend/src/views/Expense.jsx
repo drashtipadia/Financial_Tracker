@@ -7,11 +7,17 @@ import { API_PATHS } from "../utils/config";
 import Model from "../components/Model";
 import AddExpenseForm from "../ui/AddExpenseForm";
 import { dateConverter } from "../utils/helper";
+import DeleteAlert from "../components/DeleteAlert";
+import TransactionInfoCard from "../components/TransactionInfoCard";
 
 const Expense = () => {
   const [expenseData, setExpenseData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openAddExpenseModel, setOpenAddExpenseModel] = useState(false);
+  const [openDeleteAlert, setOpenDeleteAlert] = useState({
+    show: false,
+    data: null,
+  });
 
   //Get All Expense Details
   const fetchExpenseDetails = async () => {
@@ -64,11 +70,28 @@ const Expense = () => {
         );
       });
   };
-  
+
+  //Delete Expense
+  const deleteExpense = async (id) => {
+    await axiosInstance
+      .delete(API_PATHS.EXPENSE.DELETE_EXPENSE(id))
+      .then((res) => {
+        toast.success(res.data.message);
+        setOpenDeleteAlert({ show: false, data: null });
+        fetchExpenseDetails();
+      })
+      .catch((error) => {
+        console.error(
+          "Error deleting expense:",
+          error.response?.data?.message || error.message
+        );
+      });
+  };
+
   useEffect(() => {
     fetchExpenseDetails();
     return () => {};
-  }, [expenseData]);
+  }, []);
 
   return (
     <DashboardLayout activeMenu="Expense">
@@ -95,9 +118,11 @@ const Expense = () => {
             <div className="mt-10">chart</div>
           </div>
         </div>
-        <div> <div className="card">
+        <div>
+          {" "}
+          <div className="card">
             <div className="flex  justify-between">
-              <h5 className="text-lg ">Income Sources</h5>
+              <h5 className="text-lg ">Expense Sources</h5>
               <button className="card-btn">
                 {/* onClick={onDownload} */}
                 <LuDownload className="text-base" /> Download
@@ -111,18 +136,31 @@ const Expense = () => {
                   icon={expense.icon}
                   date={dateConverter(expense.date)}
                   amount={expense.amount}
-                  type="income"
-                  // onDelete={() => onDelete(income._id)}
+                  type="expense"
+                  onDelete={() => {
+                    setOpenDeleteAlert({ show: true, data: expense._id });
+                  }}
                 />
               ))}
             </div>
-          </div></div>
+          </div>
+        </div>
         <Model
           isOpen={openAddExpenseModel}
           onClose={() => setOpenAddExpenseModel(false)}
           title="Add Expense"
         >
           <AddExpenseForm onAddExpense={handleAddExpense} />
+        </Model>
+        <Model
+          isOpen={openDeleteAlert.show}
+          onClose={() => setOpenDeleteAlert({ show: false, data: null })}
+          title="Delete Expense"
+        >
+          <DeleteAlert
+            content="Are you sure want to delete this Expense details?"
+            onDelete={() => deleteExpense(openDeleteAlert.data)}
+          />
         </Model>
       </div>
     </DashboardLayout>

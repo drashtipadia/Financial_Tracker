@@ -8,11 +8,18 @@ import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS } from "../utils/config";
 import TransactionInfoCard from "../components/TransactionInfoCard";
 import { dateConverter } from "../utils/helper";
+import DeleteAlert from "../components/DeleteAlert";
 
 const Income = () => {
   const [openAddIncomeModel, setOpenAddIncomeModel] = useState(false);
   const [incomeData, setIncomeData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [openDeleteAlert, setOpenDeleteAlert] = useState({
+    show: false,
+    data: null,
+  });
+
+  //Get All Data
   const fetchIncomeDetails = async () => {
     if (loading) return;
     setLoading(true);
@@ -28,6 +35,7 @@ const Income = () => {
       .finally(setLoading(false));
   };
 
+  //Add Income
   const handleAddIncome = async (income) => {
     const { source, amount, date, icon } = income;
     if (!source.trim()) {
@@ -63,6 +71,24 @@ const Income = () => {
         );
       });
   };
+
+  //Delete Income
+  const deleteIncome = async (id) => {
+    await axiosInstance
+      .delete(API_PATHS.INCOME.DELETE_INCOME(id))
+      .then((res) => {
+        toast.success(res.data.message);
+        setOpenDeleteAlert({ show: false, data: null });
+        fetchIncomeDetails();
+      })
+      .catch((error) => {
+        console.error(
+          "Error deleting income:",
+          error.response?.data?.message || error.message
+        );
+      });
+  };
+
   useEffect(() => {
     fetchIncomeDetails();
 
@@ -109,7 +135,9 @@ const Income = () => {
                   date={dateConverter(income.date)}
                   amount={income.amount}
                   type="income"
-                  // onDelete={() => onDelete(income._id)}
+                  onDelete={() => {
+                    setOpenDeleteAlert({ show: true, data: income._id });
+                  }}
                 />
               ))}
             </div>
@@ -121,6 +149,16 @@ const Income = () => {
           title="Add Income"
         >
           <AddIncomeForm onAddIncome={handleAddIncome} />
+        </Model>
+        <Model
+          isOpen={openDeleteAlert.show}
+          onClose={() => setOpenDeleteAlert({ show: false, data: null })}
+          title="Delete Income"
+        >
+          <DeleteAlert
+            content="Are you sure want to delete this income details?"
+            onDelete={() => deleteIncome(openDeleteAlert.data)}
+          />
         </Model>
       </div>
     </DashboardLayout>
