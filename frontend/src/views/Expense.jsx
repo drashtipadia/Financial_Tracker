@@ -9,6 +9,7 @@ import AddExpenseForm from "../ui/AddExpenseForm";
 import { dateConverter } from "../utils/helper";
 import DeleteAlert from "../components/DeleteAlert";
 import TransactionInfoCard from "../components/TransactionInfoCard";
+import UpdateExpenseForm from "../ui/UpdateExpenseForm";
 
 const Expense = () => {
   const [expenseData, setExpenseData] = useState([]);
@@ -16,9 +17,12 @@ const Expense = () => {
   const [openAddExpenseModel, setOpenAddExpenseModel] = useState(false);
   const [openDeleteAlert, setOpenDeleteAlert] = useState({
     show: false,
+  });
+  const [updateExpense, setUpdateExpense] = useState({
+    show: false,
     data: null,
   });
-
+  const [selectExpenseId, setSelectExpenseId] = useState();
   //Get All Expense Details
   const fetchExpenseDetails = async () => {
     if (loading) return;
@@ -72,9 +76,9 @@ const Expense = () => {
   };
 
   //Delete Expense
-  const deleteExpense = async (id) => {
+  const deleteExpense = async () => {
     await axiosInstance
-      .delete(API_PATHS.EXPENSE.DELETE_EXPENSE(id))
+      .delete(API_PATHS.EXPENSE.DELETE_EXPENSE(selectExpenseId))
       .then((res) => {
         toast.success(res.data.message);
         setOpenDeleteAlert({ show: false, data: null });
@@ -88,6 +92,18 @@ const Expense = () => {
       });
   };
 
+  const handleUpdateExpense = async (expense) => {
+    // console.log(expense);
+    await axiosInstance
+      .put(API_PATHS.EXPENSE.UPDATE_EXPENSE(selectExpenseId), { expense })
+      .then((res) => {
+        toast.success(res.data.message);
+        setUpdateExpense({ show: false, data: null });
+        setSelectExpenseId(null);
+        fetchExpenseDetails();
+      })
+      .catch((err) => console.log(err));
+  };
   useEffect(() => {
     fetchExpenseDetails();
     return () => {};
@@ -138,7 +154,21 @@ const Expense = () => {
                   amount={expense.amount}
                   type="expense"
                   onDelete={() => {
-                    setOpenDeleteAlert({ show: true, data: expense._id });
+                    setSelectExpenseId(expense._id);
+                    setOpenDeleteAlert({ show: true });
+                  }}
+                  onUpdate={() => {
+                    setSelectExpenseId(expense._id);
+                    setUpdateExpense({
+                      show: true,
+                      data: {
+                        date: dateConverter(expense.date),
+                        icon: expense.icon,
+                        category: expense.category,
+                        amount: expense.amount,
+                      },
+                    });
+                    // console.log(income);
                   }}
                 />
               ))}
@@ -160,6 +190,16 @@ const Expense = () => {
           <DeleteAlert
             content="Are you sure want to delete this Expense details?"
             onDelete={() => deleteExpense(openDeleteAlert.data)}
+          />
+        </Model>
+        <Model
+          isOpen={updateExpense.show}
+          onClose={() => setUpdateExpense({ show: false, data: null })}
+          title="Update Expense"
+        >
+          <UpdateExpenseForm
+            onUpdateExpense={handleUpdateExpense}
+            data={updateExpense.data}
           />
         </Model>
       </div>

@@ -9,15 +9,15 @@ import { API_PATHS } from "../utils/config";
 import TransactionInfoCard from "../components/TransactionInfoCard";
 import { dateConverter } from "../utils/helper";
 import DeleteAlert from "../components/DeleteAlert";
+import UpdateIncomeForm from "../ui/UpdateIncomeForm";
 
 const Income = () => {
   const [openAddIncomeModel, setOpenAddIncomeModel] = useState(false);
   const [incomeData, setIncomeData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [openDeleteAlert, setOpenDeleteAlert] = useState({
-    show: false,
-    data: null,
-  });
+  const [openDeleteAlert, setOpenDeleteAlert] = useState({ show: false });
+  const [updateIncome, setUpdateIncome] = useState({ show: false, data: null });
+  const [selectIncomeId, setSelectIncomeId] = useState();
 
   //Get All Data
   const fetchIncomeDetails = async () => {
@@ -73,12 +73,13 @@ const Income = () => {
   };
 
   //Delete Income
-  const deleteIncome = async (id) => {
+  const deleteIncome = async () => {
     await axiosInstance
-      .delete(API_PATHS.INCOME.DELETE_INCOME(id))
+      .delete(API_PATHS.INCOME.DELETE_INCOME(selectIncomeId))
       .then((res) => {
         toast.success(res.data.message);
-        setOpenDeleteAlert({ show: false, data: null });
+        setOpenDeleteAlert({ show: false });
+        setSelectIncomeId(null);
         fetchIncomeDetails();
       })
       .catch((error) => {
@@ -87,6 +88,20 @@ const Income = () => {
           error.response?.data?.message || error.message
         );
       });
+  };
+
+  const handleUpdateIncome = async (income) => {
+    console.log(income);
+    // income= income.filter(item => item !== id);
+    await axiosInstance
+      .put(API_PATHS.INCOME.UPDATE_INCOME(selectIncomeId), { income })
+      .then((res) => {
+        toast.success(res.data.message);
+        setUpdateIncome({ show: false, data: null });
+        setSelectIncomeId(null);
+        fetchIncomeDetails();
+      })
+      .catch((err) => console.log(err));
   };
 
   useEffect(() => {
@@ -136,7 +151,21 @@ const Income = () => {
                   amount={income.amount}
                   type="income"
                   onDelete={() => {
-                    setOpenDeleteAlert({ show: true, data: income._id });
+                    setSelectIncomeId(income._id);
+                    setOpenDeleteAlert({ show: true });
+                  }}
+                  onUpdate={() => {
+                    setSelectIncomeId(income._id);
+                    setUpdateIncome({
+                      show: true,
+                      data: {
+                        date: dateConverter(income.date),
+                        icon: income.icon,
+                        source: income.source,
+                        amount: income.amount,
+                      },
+                    });
+                    // console.log(income);
                   }}
                 />
               ))}
@@ -152,12 +181,23 @@ const Income = () => {
         </Model>
         <Model
           isOpen={openDeleteAlert.show}
-          onClose={() => setOpenDeleteAlert({ show: false, data: null })}
+          onClose={() => setOpenDeleteAlert({ show: false })}
           title="Delete Income"
         >
           <DeleteAlert
             content="Are you sure want to delete this income details?"
-            onDelete={() => deleteIncome(openDeleteAlert.data)}
+            onDelete={() => deleteIncome()}
+          />
+        </Model>
+        <Model
+          isOpen={updateIncome.show}
+          onClose={() => setUpdateIncome({ show: false, data: null })}
+          title="Update Income"
+        >
+         
+          <UpdateIncomeForm
+            onUpdateIncome={handleUpdateIncome}
+            data={updateIncome.data}
           />
         </Model>
       </div>

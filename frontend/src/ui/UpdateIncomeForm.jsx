@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import Input from "../components/Input";
 import EmojiPickerPopup from "../components/EmojiPickerPopup";
-const AddIncomeForm = ({ onAddIncome }) => {
-  const [income, setIncome] = useState({
-    source: "",
-    amount: "",
-    date: "",
-    icon: "",
-  });
+const UpdateIncomeForm = ({ onUpdateIncome, data }) => {
+  const [income, setIncome] = useState({ ...data });
   const handleChange = (key, value) => setIncome({ ...income, [key]: value });
-  
+
+  //console.log(data);
+
   return (
     <div>
       <EmojiPickerPopup
@@ -42,13 +39,13 @@ const AddIncomeForm = ({ onAddIncome }) => {
         <button
           type="button"
           className="add-btn add-btn-fill"
-          onClick={() => onAddIncome(income)}
+          onClick={() => onUpdateIncome(income)}
         >
-          Add Income
+          Update Income
         </button>
       </div>
     </div>
   );
 };
 
-export default AddIncomeForm;
+export default UpdateIncomeForm;

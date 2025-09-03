@@ -14,6 +14,7 @@ const TransactionInfoCard = ({
   type,
   hideDeleteBtn,
   onDelete,
+  onUpdate,
   hideUpdateBtn,
 }) => {
   const getAmountStyles = () =>
@@ -46,7 +47,10 @@ const TransactionInfoCard = ({
             </button>
           )}
           {!hideUpdateBtn && (
-            <button className="text-gray-400 hover:text-blue-600 opacity-3 group-hover:opacity-100">
+            <button
+              className="text-gray-400 hover:text-blue-600 opacity-3 group-hover:opacity-100"
+              onClick={onUpdate}
+            >
               <LuPen />
             </button>
           )}
