@@ -103,6 +103,29 @@ const Expense = () => {
       })
       .catch((err) => console.log(err));
   };
+
+ //hanlde download expense details
+  const handleDownloadExpenseDetails = async () => {
+    try {
+      const response = await axiosInstance.get(
+        API_PATHS.EXPENSE.DOWNLOAD_EXPENSE,
+        { responseType: "blob" }
+      );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "expense_details.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.success("File download");
+    } catch (error) {
+      console.error("Error downloading expense details", error);
+      toast.error("Failed to download expense details. Please try again")
+    }
+  };
+
   useEffect(() => {
     fetchExpenseDetails();
     return () => {};
@@ -138,8 +161,8 @@ const Expense = () => {
           <div className="card">
             <div className="flex  justify-between">
               <h5 className="text-lg ">Expense Sources</h5>
-              <button className="card-btn">
-                {/* onClick={onDownload} */}
+              <button className="card-btn" onClick={handleDownloadExpenseDetails}>
+                
                 <LuDownload className="text-base" /> Download
               </button>
             </div>
