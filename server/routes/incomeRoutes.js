@@ -5,12 +5,13 @@ import {
   getAllIncome,
   deleteIncome,
   updateIncome,
+  downloadIncomeExcel,
 } from "../controller/incomeController.js";
 const route = Router();
 route.post("/add", protect, addIncome);
 route.get("/get", protect, getAllIncome);
 route.delete("/:id", protect, deleteIncome);
 route.put("/:id", protect, updateIncome);
-//route.get("/downloadexcel", protect, downloadIncomeExcel);
+route.get("/downloadexcel", protect, downloadIncomeExcel);
 
 export default route;
