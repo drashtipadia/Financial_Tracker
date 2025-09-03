@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import DashboardLayout from "../components/DashboardLayout";
 import { LuDownload, LuPlus } from "react-icons/lu";
 import Model from "../components/Model";
-import AddIncomeForm from "../ui/AddIncomeForm";
+import IncomeForm from "../ui/IncomeForm";
 import toast from "react-hot-toast";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS } from "../utils/config";
 import TransactionInfoCard from "../components/TransactionInfoCard";
 import { dateConverter } from "../utils/helper";
 import DeleteAlert from "../components/DeleteAlert";
-import UpdateIncomeForm from "../ui/UpdateIncomeForm";
 
 const Income = () => {
   const [openAddIncomeModel, setOpenAddIncomeModel] = useState(false);
@@ -177,7 +176,7 @@ const Income = () => {
           onClose={() => setOpenAddIncomeModel(false)}
           title="Add Income"
         >
-          <AddIncomeForm onAddIncome={handleAddIncome} />
+          <IncomeForm onAddIncome={handleAddIncome} />
         </Model>
         <Model
           isOpen={openDeleteAlert.show}
@@ -194,8 +193,7 @@ const Income = () => {
           onClose={() => setUpdateIncome({ show: false, data: null })}
           title="Update Income"
         >
-         
-          <UpdateIncomeForm
+          <IncomeForm
             onUpdateIncome={handleUpdateIncome}
             data={updateIncome.data}
           />

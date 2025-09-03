@@ -1,14 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Input from "../components/Input";
 import EmojiPickerPopup from "../components/EmojiPickerPopup";
 
-const AddExpenseForm = ({ onAddExpense }) => {
-  const [expense, setExpense] = useState({
-    category: "",
-    amount: "",
-    date: "",
-    icon: "",
-  });
+const ExpenseForm = ({ onAddExpense, onUpdateExpense, data }) => {
+  const [expense, setExpense] = useState({ ...data });
   const handleChange = (key, value) => setExpense({ ...expense, [key]: value });
   return (
     <form>
@@ -39,16 +34,27 @@ const AddExpenseForm = ({ onAddExpense }) => {
       />
 
       <div className="flex justify-end mt-6">
-        <button
-          type="button"
-          className="add-btn add-btn-fill"
-          onClick={() => onAddExpense(expense)}
-        >
-          Add Expense
-        </button>
+        {onAddExpense && (
+          <button
+            type="button"
+            className="add-btn add-btn-fill"
+            onClick={() => onAddExpense(expense)}
+          >
+            Add Expense
+          </button>
+        )}
+        {onUpdateExpense && (
+          <button
+            type="button"
+            className="add-btn add-btn-fill"
+            onClick={() => onUpdateExpense(expense)}
+          >
+            Update Expense
+          </button>
+        )}
       </div>
     </form>
   );
 };
 
-export default AddExpenseForm;
+export default ExpenseForm;

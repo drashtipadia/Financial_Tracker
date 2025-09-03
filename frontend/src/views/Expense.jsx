@@ -5,11 +5,10 @@ import toast from "react-hot-toast";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS } from "../utils/config";
 import Model from "../components/Model";
-import AddExpenseForm from "../ui/AddExpenseForm";
+import ExpenseForm from "../ui/ExpenseForm";
 import { dateConverter } from "../utils/helper";
 import DeleteAlert from "../components/DeleteAlert";
 import TransactionInfoCard from "../components/TransactionInfoCard";
-import UpdateExpenseForm from "../ui/UpdateExpenseForm";
 
 const Expense = () => {
   const [expenseData, setExpenseData] = useState([]);
@@ -180,7 +179,7 @@ const Expense = () => {
           onClose={() => setOpenAddExpenseModel(false)}
           title="Add Expense"
         >
-          <AddExpenseForm onAddExpense={handleAddExpense} />
+          <ExpenseForm onAddExpense={handleAddExpense} />
         </Model>
         <Model
           isOpen={openDeleteAlert.show}
@@ -197,7 +196,7 @@ const Expense = () => {
           onClose={() => setUpdateExpense({ show: false, data: null })}
           title="Update Expense"
         >
-          <UpdateExpenseForm
+          <ExpenseForm
             onUpdateExpense={handleUpdateExpense}
             data={updateExpense.data}
           />

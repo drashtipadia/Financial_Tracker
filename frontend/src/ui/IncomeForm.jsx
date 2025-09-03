@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Input from "../components/Input";
 import EmojiPickerPopup from "../components/EmojiPickerPopup";
-const UpdateIncomeForm = ({ onUpdateIncome, data }) => {
+
+const IncomeForm = ({ onAddIncome, onUpdateIncome, data }) => {
   const [income, setIncome] = useState({ ...data });
   const handleChange = (key, value) => setIncome({ ...income, [key]: value });
-
-  //console.log(data);
-
   return (
     <div>
       <EmojiPickerPopup
@@ -36,16 +34,27 @@ const UpdateIncomeForm = ({ onUpdateIncome, data }) => {
       />
 
       <div className="flex justify-end mt-6">
-        <button
-          type="button"
-          className="add-btn add-btn-fill"
-          onClick={() => onUpdateIncome(income)}
-        >
-          Update Income
-        </button>
+        {onAddIncome && (
+          <button
+            type="button"
+            className="add-btn add-btn-fill"
+            onClick={() => onAddIncome(income)}
+          >
+            Add Income
+          </button>
+        )}
+        {onUpdateIncome && (
+          <button
+            type="button"
+            className="add-btn add-btn-fill"
+            onClick={() => onUpdateIncome(income)}
+          >
+            Update Income
+          </button>
+        )}
       </div>
     </div>
   );
 };
 
-export default UpdateIncomeForm;
+export default IncomeForm;
