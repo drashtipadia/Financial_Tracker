@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../hooks/useAuthStore";
-import Navbar from "../components/Navbar";
+
 import DashboardLayout from "../components/DashboardLayout";
 
 const Home = () => {

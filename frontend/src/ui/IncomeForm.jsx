@@ -4,7 +4,15 @@ import EmojiPickerPopup from "../components/EmojiPickerPopup";
 
 const IncomeForm = ({ onAddIncome, onUpdateIncome, data }) => {
   const [income, setIncome] = useState({ ...data });
+  const [errors, setErrors] = useState({});
   const handleChange = (key, value) => setIncome({ ...income, [key]: value });
+  const validate = () => {
+    let newErrors = {};
+    if (!income.amount) newErrors.amount = "Amount is required";
+    if (!income.source) newErrors.source = "Source is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
   return (
     <div>
       <EmojiPickerPopup
@@ -18,6 +26,7 @@ const IncomeForm = ({ onAddIncome, onUpdateIncome, data }) => {
         placeholder="Freelance, salary, etc"
         type="text"
       />
+      {errors.source && <p className="text-red-500 text-xs">{errors.source}</p>}
       <Input
         value={income.amount}
         onChange={({ target }) => handleChange("amount", target.value)}
@@ -25,6 +34,7 @@ const IncomeForm = ({ onAddIncome, onUpdateIncome, data }) => {
         placeholder=""
         type="number"
       />
+      {errors.amount && <p className="text-red-500 text-xs">{errors.amount}</p>}
       <Input
         value={income.date}
         onChange={({ target }) => handleChange("date", target.value)}
@@ -47,7 +57,11 @@ const IncomeForm = ({ onAddIncome, onUpdateIncome, data }) => {
           <button
             type="button"
             className="add-btn add-btn-fill"
-            onClick={() => onUpdateIncome(income)}
+            onClick={() => {
+              if (validate) {
+                onUpdateIncome(income);
+              }
+            }}
           >
             Update Income
           </button>

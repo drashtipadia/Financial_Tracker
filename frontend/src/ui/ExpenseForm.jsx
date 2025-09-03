@@ -4,7 +4,15 @@ import EmojiPickerPopup from "../components/EmojiPickerPopup";
 
 const ExpenseForm = ({ onAddExpense, onUpdateExpense, data }) => {
   const [expense, setExpense] = useState({ ...data });
+  const [errors, setErrors] = useState({});
   const handleChange = (key, value) => setExpense({ ...expense, [key]: value });
+  const validate = () => {
+    let newErrors = {};
+    if (!expense.amount) newErrors.amount = "Amount is required";
+    if (!expense.category) newErrors.source = "Category is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
   return (
     <form>
       <EmojiPickerPopup
@@ -18,6 +26,9 @@ const ExpenseForm = ({ onAddExpense, onUpdateExpense, data }) => {
         placeholder="Rent, Groceries etc"
         type="text"
       />
+      {errors.category && (
+        <p className="text-red-500 text-xs">{errors.category}</p>
+      )}
       <Input
         value={expense.amount}
         onChange={({ target }) => handleChange("amount", target.value)}
@@ -25,6 +36,7 @@ const ExpenseForm = ({ onAddExpense, onUpdateExpense, data }) => {
         placeholder=""
         type="number"
       />
+      {errors.amount && <p className="text-red-500 text-xs">{errors.amount}</p>}
       <Input
         value={expense.date}
         onChange={({ target }) => handleChange("date", target.value)}
@@ -47,7 +59,11 @@ const ExpenseForm = ({ onAddExpense, onUpdateExpense, data }) => {
           <button
             type="button"
             className="add-btn add-btn-fill"
-            onClick={() => onUpdateExpense(expense)}
+            onClick={() => {
+              if (validate) {
+                onUpdateExpense(expense);
+              }
+            }}
           >
             Update Expense
           </button>

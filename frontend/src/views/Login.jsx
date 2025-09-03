@@ -11,6 +11,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
   const setUser = useAuthStore((state) => state.setUser);
   const user = useAuthStore((state) => state.user);
   const isEmptyObject = (obj) => JSON.stringify(obj) === "{}";
@@ -18,24 +19,40 @@ export default function Login() {
     return isEmptyObject(user) ? navigate("/login") : navigate("/dashboard");
   }, [user, navigate]);
 
+  const validate = () => {
+    let newErrors = {};
+    if (!email) newErrors.email = "Email is required";
+    if (!password) newErrors.password = "Password is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    await axiosInstance
-      .post(API_PATHS.AUTH.LOGIN, {
-        email,
-        password,
-      })
-      .then((res) => {
-        // console.log(JSON.stringify(res.data));
-        localStorage.setItem("token", res.data.payload.token);
-        localStorage.setItem("user", JSON.stringify(res.data.payload.user));
-        setUser(res.data.payload.user);
-        // console.log(user);
-        navigate("/");
-        toast.success("Login Successfully");
-      })
-      .catch((err) => console.log(err));
+    if (validate()) {
+      await axiosInstance
+        .post(API_PATHS.AUTH.LOGIN, {
+          email,
+          password,
+        })
+        .then((res) => {
+          if (res.status == 400) {
+            console.log(res.data.message);
+          }
+          localStorage.setItem("token", res.data.payload.token);
+          localStorage.setItem("user", JSON.stringify(res.data.payload.user));
+          setUser(res.data.payload.user);
+          // console.log(user);
+          navigate("/");
+          toast.success("Login Successfully");
+        })
+        .catch((error) => {
+          if (error.response && error.response.data.message) {
+            toast.error(error.response.data.message);
+          } else {
+            toast.error("Something  went wrong.Please try again");
+          }
+        });
+    }
   };
 
   return (
@@ -69,7 +86,9 @@ export default function Login() {
               value={email}
               onChange={({ target }) => setEmail(target.value)}
             />
-
+            {errors.email && (
+              <p className="text-red-500 text-xs">{errors.email}</p>
+            )}
             <Input
               label="Password"
               type="password"
@@ -77,7 +96,9 @@ export default function Login() {
               value={password}
               onChange={({ target }) => setPassword(target.value)}
             />
-
+            {errors.password && (
+              <p className="text-red-500 text-xs ">{errors.password}</p>
+            )}
             <div>
               <button
                 type="submit"

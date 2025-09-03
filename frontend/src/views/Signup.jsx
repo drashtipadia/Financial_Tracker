@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Input from "../components/input";
+import Input from "../components/Input";
 import { LuTrendingUpDown } from "react-icons/lu";
 import { API_PATHS } from "../utils/config";
 import axiosInstance from "../utils/axiosInstance";
@@ -14,27 +14,45 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [confirmpwd, setConfirmpwd] = useState("");
   const setUser = useAuthStore((state) => state.setUser);
-  // const user = useAuthStore((state) => state.user);
+  const [errors, setErrors] = useState({});
+  const validate = () => {
+    let newErrors = {};
+    if (!fullname) newErrors.fullname = "Name is required";
+    if (!email) newErrors.email = "Email is required";
+    if (!password) newErrors.password = "Password is required";
+    if (!confirmpwd) newErrors.confirmpwd = "Confirm Password is required";
+    if (password != confirmpwd)
+      newErrors.confirmpwd = "Confirm Password is not matched";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
   const handleSignup = async (e) => {
     e.preventDefault();
-    await axiosInstance
-      .post(API_PATHS.AUTH.REGISTER, {
-        fullname,
-        email,
-        password,
-      })
-      .then((res) => {
-        // console.log(JSON.stringify(res));
-        if (res.status == 201) {
-          localStorage.setItem("token", res.data.payload.token);
-          localStorage.setItem("user", JSON.stringify(res.data.payload.data));
-          setUser(res.data.payload.data);
-          // console.log(user);
-          navigate("/");
-          toast.success("Register Successfully");
-        }
-      })
-      .catch((err) => console.log(err));
+    if (validate()) {
+      await axiosInstance
+        .post(API_PATHS.AUTH.REGISTER, {
+          fullname,
+          email,
+          password,
+        })
+        .then((res) => {
+          if (res.status == 201) {
+            localStorage.setItem("token", res.data.payload.token);
+            localStorage.setItem("user", JSON.stringify(res.data.payload.data));
+            setUser(res.data.payload.data);
+
+            navigate("/");
+            toast.success("Register Successfully");
+          }
+        })
+        .catch((error) => {
+          if (error.response && error.response.data.message) {
+            toast.error(error.response.data.message);
+          } else {
+            toast.error("Something  went wrong.Please try again");
+          }
+        });
+    }
   };
   return (
     <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -52,6 +70,9 @@ export default function Signup() {
               value={fullname}
               onChange={({ target }) => setFullname(target.value)}
             />
+            {errors.fullname && (
+              <p className="text-red-500 text-xs m-1">{errors.fullname}</p>
+            )}
 
             <Input
               label="Email address"
@@ -60,6 +81,9 @@ export default function Signup() {
               value={email}
               onChange={({ target }) => setEmail(target.value)}
             />
+            {errors.email && (
+              <p className="text-red-500 text-xs m-1">{errors.email}</p>
+            )}
 
             <Input
               label="Password"
@@ -68,6 +92,9 @@ export default function Signup() {
               value={password}
               onChange={({ target }) => setPassword(target.value)}
             />
+            {errors.password && (
+              <p className="text-red-500 text-xs m-1">{errors.password}</p>
+            )}
 
             <Input
               label="Confirm Password"
@@ -76,6 +103,9 @@ export default function Signup() {
               value={confirmpwd}
               onChange={({ target }) => setConfirmpwd(target.value)}
             />
+            {errors.confirmpwd && (
+              <p className="text-red-500 text-xs m-1">{errors.confirmpwd}</p>
+            )}
 
             <div>
               <button
