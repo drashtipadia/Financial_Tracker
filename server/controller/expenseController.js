@@ -37,16 +37,15 @@ export const getAllExpense = async (req, res) => {
     .catch((error) => res.status(400).json({ message: error }));
 };
 export const deleteExpense = async (req, res) => {
-  const UserId = req.user.id;
   await Expense.findByIdAndDelete(req.params.id)
     .then((data) => res.status(200).json({ message: "Delete successfully" }))
     .catch((error) => console.log(error));
 };
 export const updateExpense = async (req, res) => {
-  const expenseId = req.expense.id;
-  const updatedData = req.body;
+  const expenseId = req.params.id;
+  const updatedData = { $set: req.body.expense };
   await Expense.findByIdAndUpdate(expenseId, updatedData, { new: true })
-    .then((data) => res.status(200).json(data))
+    .then((data) => res.status(200).json({ message: "Update successfully" }))
     .catch((error) => {
       console.error("Error updating item:", error);
       res.status(500).send("Server Error");
