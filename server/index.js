@@ -5,6 +5,7 @@ import "./db.js";
 import authRoutes from "./routes/authRoutes.js";
 import incomeRoutes from "./routes/incomeRoutes.js";
 import expenseRoutes from "./routes/expenseRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
 
 const app = express();
 app.use(cors());
@@ -21,6 +22,7 @@ app.get("/", function (_, res) {
 app.use("/api/auth", authRoutes);
 app.use("/api/v1/income", incomeRoutes);
 app.use("/api/v1/expense", expenseRoutes);
+app.use("/api/v1/dashboard", dashboardRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server started at port ${PORT}`);
