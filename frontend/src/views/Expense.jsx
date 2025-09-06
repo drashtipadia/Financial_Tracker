@@ -104,7 +104,7 @@ const Expense = () => {
       .catch((err) => console.log(err));
   };
 
- //hanlde download expense details
+  //hanlde download expense details
   const handleDownloadExpenseDetails = async () => {
     try {
       const response = await axiosInstance.get(
@@ -122,7 +122,7 @@ const Expense = () => {
       toast.success("File download");
     } catch (error) {
       console.error("Error downloading expense details", error);
-      toast.error("Failed to download expense details. Please try again")
+      toast.error("Failed to download expense details. Please try again");
     }
   };
 
@@ -153,7 +153,6 @@ const Expense = () => {
                 <LuPlus className="text-lg" /> AddExpense
               </button>
             </div>
-            <div className="mt-10">chart</div>
           </div>
         </div>
         <div>
@@ -161,8 +160,10 @@ const Expense = () => {
           <div className="card">
             <div className="flex  justify-between">
               <h5 className="text-lg ">Expense Sources</h5>
-              <button className="card-btn" onClick={handleDownloadExpenseDetails}>
-                
+              <button
+                className="card-btn"
+                onClick={handleDownloadExpenseDetails}
+              >
                 <LuDownload className="text-base" /> Download
               </button>
             </div>

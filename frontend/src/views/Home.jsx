@@ -28,7 +28,6 @@ const Home = () => {
         .get(API_PATHS.DASHBOARD.GET_DATA)
         .then();
       if (response.data) {
-        console.log(response.data);
         setDashboardData(response.data);
       }
     } catch (error) {
@@ -83,10 +82,9 @@ const Home = () => {
             )}
           </div>
           {dashboardData.monthlytotal && (
-            <MonthlySummerise data={dashboardData.monthlytotal} />
+            <MonthlySummerise data={dashboardData.monthlytotal || 0} />
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            {" "}
             {dashboardData.last30daysExpense && (
               <RecentExpense
                 data={dashboardData.last30daysExpense.transactions || []}
