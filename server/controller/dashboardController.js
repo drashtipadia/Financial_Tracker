@@ -70,6 +70,7 @@ export const getDashboardData = async (req, res) => {
         },
       ])),
     ];
+    //  console.log(monthlySummery);
 
     res.json({
       totalBalance:
@@ -77,15 +78,15 @@ export const getDashboardData = async (req, res) => {
       totalIncome: totalIncome[0]?.total || 0,
       totalExpense: totalExpense[0]?.total || 0,
       last30daysExpense: {
-        total: expensesLast30days,
-        transactions: last30daysExpenseTransactions,
+        total: expensesLast30days || 0,
+        transactions: last30daysExpenseTransactions || 0,
       },
       last30daysIncome: {
-        total: incomeLast30days,
-        transactions: last30dayIncomeTranscation,
+        total: incomeLast30days || 0,
+        transactions: last30dayIncomeTranscation || 0,
       },
-      recentTranscation: lastTranscation,
-      monthlytotal: monthlySummery,
+      recentTranscation: lastTranscation || 0,
+      monthlytotal: monthlySummery || 0,
     });
   } catch (error) {
     res.status(500).json({ message: "Server Error", error });

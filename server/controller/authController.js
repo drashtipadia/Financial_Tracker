@@ -83,3 +83,44 @@ export const getUserInfo = async (req, res) => {
     .then((data) => res.status(201).json(data))
     .catch((error) => res.status(400).json({ message: "User not found" }));
 };
+//===========================
+export const updateUserInfo = async (req, res) => {
+  const updates = { $set: req.body };
+  const id = req.params.id;
+  //const updateData =
+  await User.findByIdAndUpdate(id, updates, {
+    new: true,
+    select: "-password",
+  })
+    .then((data) => {
+      res.status(200).send({ message: "Update Successfully", data: data });
+    })
+    .catch((error) => res.status(500).send(error));
+};
+//=========================
+export const updatepwd = async (req, res) => {
+  const { id, oldpassword, newpassword } = req.body;
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const isMatch = await bcrypt.compare(oldpassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Incorrect old password" });
+    }
+    await User.findByIdAndUpdate(
+      id,
+      { password: await bcrypt.hash(newpassword, 8) },
+      { new: true }
+    )
+      .then((data) =>
+        res.status(200).json({ message: "Password updated successfully" })
+      )
+      .catch((error) => res.status(500).json({ message: error }));
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
